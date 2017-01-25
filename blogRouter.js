@@ -10,6 +10,9 @@ const {BlogPosts} = require("./models");
 BlogPosts.create(
 	"First Blog Post", "Content for the first blog post", "Jon Snow", "1/1/2017"
 	);
+BlogPosts.create(
+  "Second Blog Post", "Content for the second blog post", "Jane Snow", "1/2/2017"
+  );
 
 //When root of this router is called with GET, return all blog posts
 router.get('/', (req, res) => {

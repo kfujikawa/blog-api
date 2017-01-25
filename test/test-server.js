@@ -62,7 +62,10 @@ describe("/blog-posts", function(){
 	//Test PUT request
 	it("should update blog post on PUT", function(){
 		const updateData = {
-			title: "foo"
+			title: "foo",
+			content: "bar",
+			author: "bizz",
+			publishDate: "1/3/2017"
 		};
 
 		return chai.request(app)
