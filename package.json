@@ -4,7 +4,7 @@
   "description": "Blog api exercise",
   "main": "app.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node app.js",
     "test": "mocha ./test"
   },
   "author": "Kinuyo Fujikawa",
