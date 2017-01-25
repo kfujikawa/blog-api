@@ -38,21 +38,26 @@ describe("/blog-posts", function(){
 			});
 	});//End GET test
 
-	//Test POST request
-	it("should add a new blog post item on POST", function(){
-		const newItem = {title: "Another Blog Post", content: "Content for this blog post", author:"Arya Stark", publishDate: "1/25/2017"};
-		return chai.request(app)
-			.post("/blog-posts")
-			.send(newItem)
-			.then(function(res){
-				res.should.have.status(201);
-				res.should.be.json;
-				res.body.should.be.a("object");
-				res.body.should.include.keys("title", "content", "author", "publishDate");
-				res.body.title.should.not.be.null;
-				res.body.should.deep.equal(Object.assign(newItem, {title: res.body.title}));
-			});
-	});//End POST test
+	// //Test POST request
+	// it("should add a new blog post item on POST", function(){
+	// 	const newItem = {
+	// 		title: "Another Blog Post", 
+	// 		content: "Content for this blog post", 
+	// 		author:"Arya Stark", 
+	// 		publishDate: "1/25/2017"
+	// 	};
+	// 	return chai.request(app)
+	// 		.post("/blog-posts")
+	// 		.send(newItem)
+	// 		.then(function(res){
+	// 			res.should.have.status(201);
+	// 			res.should.be.json;
+	// 			res.body.should.be.a("object");
+	// 			res.body.should.include.keys("title", "content", "author", "publishDate");
+	// 			res.body.title.should.not.be.null;
+	// 			res.body.should.deep.equal(Object.assign(newItem, {title: res.body.title}));
+	// 		});
+	// });//End POST test
 
 	//Test PUT request
 	it("should update blog post on PUT", function(){
