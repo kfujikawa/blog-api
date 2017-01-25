@@ -80,9 +80,13 @@ describe("/blog-posts", function(){
 	//Test DELETE request
 	it("should delete blog post on DELETE", function(){
 		return chai.request(app)
-			.delete(`/blog-posts/${res.body[0].id}`);
-	})
-	.then(function(res){
-		res.should.have.status(204);
+		.get("/blog-posts")
+		.then(function(res){
+			return chai.request(app)
+				.delete(`/blog-posts/${res.body[0].id}`);
+		})
+		.then(function(res){
+			res.should.have.status(204);
+		});
 	});
 }); //End describe blog
