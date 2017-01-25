@@ -1,8 +1,3 @@
-// GET and POST requests should go to /blog-posts.
-// DELETE and PUT requests should go to /blog-posts/:id.
-// Use Express router and modularize routes to /blog-posts.
-// Add a couple of blog posts on server load so you'll automatically have some data to look at when the server starts.
-
 const express = require("express");
 const morgan = require("morgan");
 
@@ -22,7 +17,55 @@ app.get('/', (req, res) => {
 //route requests for /blog-posts to the express router
 app.use("/blog-posts", blogRouter);
 
+//Start server and return promise
+function runServer() {
+  const port = process.env.PORT || 8080;
+  return new Promise((resolve, reject) => {
+    app.listen(port, () => {
+      console.log(`Your app is listening on port ${port}`);
+      resolve();
+    })
+    .on('error', err => {
+      reject(err);
+    });
+  });
+}
+
+let server;
+
+function runServer() {
+  const port = process.env.PORT || 8080;
+  return new Promise((resolve, reject) => {
+    server = app.listen(port, () => {
+      console.log(`Your app is listening on port ${port}`);
+      resolve(server);
+    }).on('error', err => {
+      reject(err)
+    });
+  });
+}
+
+function closeServer() {
+  return new Promise((resolve, reject) => {
+    console.log('Closing server');
+    server.close(err => {
+      if (err) {
+        reject(err);
+        // so we don't also call `resolve()`
+        return;
+      }
+      resolve();
+    });
+  });
+}
+
+if (require.main === module) {
+  runServer().catch(err => console.error(err));
+};
+
+module.exports = {app, runServer, closeServer};
+
 //=======LISTENER======//
-app.listen(8080, () => {
-	console.log("Listening on port 8080");
-});
+// app.listen(8080, () => {
+// 	console.log("Listening on port 8080");
+// });
