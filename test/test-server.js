@@ -55,7 +55,7 @@ describe("/blog-posts", function(){
 				res.body.should.be.a("object");
 				res.body.should.include.keys("title", "content", "author", "publishDate");
 				res.body.title.should.not.be.null;
-				res.body.should.deep.equal(Object.assign(newItem, {title: res.body.title}));
+				res.body.should.deep.equal(Object.assign(newItem, {id: res.body.id}));
 			});
 	});//End POST test
 
