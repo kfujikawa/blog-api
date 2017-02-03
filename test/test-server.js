@@ -8,7 +8,7 @@ const should = chai.should();
 chai.use(chaiHttp);
 
 //=================BLOG TEST===================//
-describe("/blog-posts", function(){
+describe("/posts", function(){
 	// Activate server before tests run
 	before(function(){
 		return runServer();
@@ -22,7 +22,7 @@ describe("/blog-posts", function(){
 	//Test GET request
 	it("should list blog posts on GET", function(){
 		return chai.request(app)
-			.get("/blog-posts")
+			.get("/posts")
 			.then(function(res){
 				res.should.have.status(200);
 				res.should.be.json;
@@ -47,7 +47,7 @@ describe("/blog-posts", function(){
 			publishDate: "1/25/2017"
 		};
 		return chai.request(app)
-			.post("/blog-posts")
+			.post("/posts")
 			.send(newItem)
 			.then(function(res){
 				res.should.have.status(201);
@@ -69,11 +69,11 @@ describe("/blog-posts", function(){
 		};
 
 		return chai.request(app)
-			.get("/blog-posts")
+			.get("/posts")
 			.then(function(res){
 				updateData.id = res.body[0].id;
 				return chai.request(app)
-					.put(`/blog-posts/${updateData.id}`)
+					.put(`/posts/${updateData.id}`)
 					.send(updateData);
 			})
 			.then(function(res){
@@ -83,10 +83,10 @@ describe("/blog-posts", function(){
 	//Test DELETE request
 	it("should delete blog post on DELETE", function(){
 		return chai.request(app)
-		.get("/blog-posts")
+		.get("/posts")
 		.then(function(res){
 			return chai.request(app)
-				.delete(`/blog-posts/${res.body[0].id}`);
+				.delete(`/posts/${res.body[0].id}`);
 		})
 		.then(function(res){
 			res.should.have.status(204);

@@ -1,9 +1,17 @@
 const express = require("express");
 const morgan = require("morgan");
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+
+mongoose.Promise = global.Promise; 
+
+const {PORT, DATABASE_URL} = require('./config');
+const {Blog} = require('./models');
 
 const app = express();
-
 const blogRouter = require("./blogRouter");
+app.use(bodyParser.json());
+
 
 // log the http layer
 app.use(morgan("common"));
@@ -14,33 +22,27 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/index.html');
 });
 
-//route requests for /blog-posts to the express router
-app.use("/blog-posts", blogRouter);
+//route requests for /posts to the express router
+app.use("/posts", blogRouter);
 
 //Start server and return promise
-function runServer() {
-  const port = process.env.PORT || 8080;
-  return new Promise((resolve, reject) => {
-    app.listen(port, () => {
-      console.log(`Your app is listening on port ${port}`);
-      resolve();
-    })
-    .on('error', err => {
-      reject(err);
-    });
-  });
-}
-
 let server;
 
-function runServer() {
-  const port = process.env.PORT || 8080;
+function runServer(databaseUrl=DATABASE_URL, port=PORT) {
   return new Promise((resolve, reject) => {
-    server = app.listen(port, () => {
-      console.log(`Your app is listening on port ${port}`);
-      resolve(server);
-    }).on('error', err => {
-      reject(err)
+    mongoose.connect(databaseUrl, err => {
+      if (err) {
+        return reject(err);
+      }
+
+      app.listen(port, () => {
+        console.log(`Your app is listening on port ${port}`);
+        resolve();
+      })
+      .on('error', err => {
+        mongoose.disconnect();
+        reject(err);
+      });
     });
   });
 }
@@ -64,8 +66,3 @@ if (require.main === module) {
 };
 
 module.exports = {app, runServer, closeServer};
-
-//=======LISTENER======//
-// app.listen(8080, () => {
-// 	console.log("Listening on port 8080");
-// });
