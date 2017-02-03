@@ -4,25 +4,32 @@ const mongoose = require('mongoose');
 //Schema to represent a blog
 const blogSchema = mongoose.Schema({
   // the `name` property is String type and required
-  title: {type: String, required: true},
-  content: {type: String, required: true},
-  author: {type: String, required: true},
-  publishDate: {type: Date, default: Date.now},
+  title: {
+    type: String, 
+    required: [true, "Title field is required."]
+  },
+  content: {
+    type: String, 
+    required: [true, "Content field is required."]
+  },
+  author: {
+    firstName: {
+      type: String, 
+      required: [true, "First name field is required"]
+    },
+    lastName: {
+      type: String,
+      required: [true, "Last name field is required"]
+    }
+  },
+  publishDate: {
+    type: Date, 
+    default: Date.now
+  },
 });
 
 //Virtuals?
 
-//Instance method available on all instances of the model.  This is to limit what is exposed.  
-blogSchema.methods.apiRepr = function(){
-  return {
-    id: this._id,
-    title: this.title,
-    content: this.content,
-    author: this.author,
-    publishDate: this.publishDate
-  };
-}
+// Creates a new Mongoose model "Post" that uses the blogSchema.  "Post" represents the collection in the db.  Mongo converts the name to lowercase and pluralizes ("db.posts")
 
-const blogPost = mongoose.model("BlogPost", blogSchema);
-
-module.exports = {blogPost}; 
+module.exports = mongoose.model("Post", blogSchema); 

@@ -4,86 +4,68 @@ const router = express.Router();
 const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json();
 
-const {BlogPosts} = require("./models");
+const Post = require("./models");
 
-//When root of this router is called with GET, return all blog posts
-router.get('/posts', (req, res) => {
-  BlogPost
+//GET
+router.get("/", (req, res) => {
+  Post
     .find()
-    .exec()
-    .then(blogPosts => {
-      res.json({
-        blogPosts: blogPosts.map((blogPosts) => blogPosts.apiRepr())
-      });
-    })
-    .catch(
-      err => {
-        console.error(err);
-        res.status(500).json({message: 'Internal server error'});
-      });
-});
-
-//GET by id 
-router.get('/posts/:id', (req, res) => {
-  BlogPost
-    .findById(req.params.id)
-    .exec()
-    .then(blogPosts => res.json(blogPosts.apiRepr()))
-    .catch(
-      err => {
-        console.error(err);
-        res.status(500).json({message: 'Internal server error'});
-      });
-});
-
-// When a new blog post is created, check for required fields (title, content, author, publishDate).  If not log error and return 400 status code.  If required fields are there, add new blog post to BlogPosts and return it with 201. 
-router.post('/posts', jsonParser, (req, res) => {
-  // ensure `title`, `content`, `author`, `publishDate` are in request body
-  const requiredFields = ['title', 'content', 'author', 'publishDate'];
-  for (let i=0; i<requiredFields.length; i++) {
-    const field = requiredFields[i];
-    if (!(field in req.body)) {
-      const message = `Missing \`${field}\` in request body`
-      console.error(message);
-      return res.status(400).send(message);
-    }
-  }
-
-  BlogPost
-    .create({
-      title: req.body.title,
-      content: req.body.title,
-      author: req.body.author,
-      publishDate: req.body.publishDate
-    .then(
-      blogPosts => res.status(201).json(blogPosts.apiRepr()))
-    .catch(err => {
+    .select("title content author publishDate")
+    // .where("author.firstName").equals("Wilson")
+    .then(posts => {
+      res.status(200).json(posts);
+    }).catch(err => {
       console.error(err);
-      res.status(500).json({message: 'Internal server error'});
-      })
+      res.status(500).json({
+        message: "Internal server error"
+      });
     });
 });
 
-//When DELETE request comes in with an id in path; try to delete from BlogPosts.  
-router.delete('/posts/:id', (req, res) => {
-  BlogPost
-    .findByIdAndRemove(req.params.id)
-    .exec()
-    .then(blogPost => res.status(204).end())
-    .catch(err => res.status(500).json({message: 'Internal server error'}));
-})
-
-// catch-all endpoint if client makes request to non-existent endpoint
-router.use('*', function(req, res) {
-  res.status(404).json({message: 'Not Found'});
+//GET by id 
+router.get("/:id", (req, res) => {
+  Post
+    .findById(req.params.id)
+    .then(post => {
+      res.status(200).json(post);
+    }).catch(
+      err => {
+        console.error(err);
+        res.status(500).json({
+          message: "Internal server error"
+        });
+      });
 });
 
-// When a PUT request comes in check for required fields. 
-// Check for item id in url path, and item id in update item
-// log error if any issues and send back status code 400. 
-// Else call `BlogPosts.update` with updated item.
-router.put('/posts/:id', (req, res) => {
-  // ensure that the id in the request path and the one in request body match
+//POST
+router.post("/", jsonParser, (req, res) => {
+  Post
+    .create(req.body)
+    .then(post => res.status(201).end())
+    .catch(error => {
+      res.status(500).json({
+        message: "Internal server error"
+      });
+    });
+});
+
+//DELETE
+router.delete('/:id', (req, res) => {
+  Post
+    .findByIdAndRemove(req.params.id)
+    .then(post => res.status(204).end())
+    .catch(err => res.status(500).json({
+      message: "Internal server error"
+    }));
+});
+
+// Catch-all endpoint 
+router.use("*", (req, res) =>{
+  res.status(404).json({message: "Not Found"});
+});
+
+// PUT
+router.put("/:id", (req, res) => {
   if (!(req.params.id && req.body.id && req.params.id === req.body.id)) {
     const message = (
       `Request path id (${req.params.id}) and request body id ` +
@@ -104,10 +86,9 @@ router.put('/posts/:id', (req, res) => {
     }
   });
 
-  BlogPost
+  Post
     // all key/value pairs in toUpdate will be updated -- that's what `$set` does
     .findByIdAndUpdate(req.params.id, {$set: toUpdate})
-    .exec()
     .then(restaurant => res.status(204).end())
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });

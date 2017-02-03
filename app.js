@@ -2,11 +2,12 @@ const express = require("express");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const path = require("path");
 
 mongoose.Promise = global.Promise; 
 
-const {PORT, DATABASE_URL} = require('./config');
-const {Blog} = require('./models');
+const {PORT, DATABASE_URL} = require("./config");
+const {Blog} = require("./models");
 
 const app = express();
 const blogRouter = require("./blogRouter");
@@ -16,10 +17,10 @@ app.use(bodyParser.json());
 // log the http layer
 app.use(morgan("common"));
 
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "/public")));
 
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/views/index.html');
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/public/views/index.html");
 });
 
 //route requests for /posts to the express router
@@ -39,7 +40,7 @@ function runServer(databaseUrl=DATABASE_URL, port=PORT) {
         console.log(`Your app is listening on port ${port}`);
         resolve();
       })
-      .on('error', err => {
+      .on("error", err => {
         mongoose.disconnect();
         reject(err);
       });
@@ -49,7 +50,7 @@ function runServer(databaseUrl=DATABASE_URL, port=PORT) {
 
 function closeServer() {
   return new Promise((resolve, reject) => {
-    console.log('Closing server');
+    console.log("Closing server");
     server.close(err => {
       if (err) {
         reject(err);
