@@ -9,23 +9,29 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/css/style.css">
   </head>
   <body>
     <div class="container">
       <header>
-        <h1>Blog</h1>
+        <h1>Blog Assignment</h1>
       </header>
       <main>
         <section>
-          <h2>Blog Posts</h2>
+          <h2>Create a new blog post</h2>
           <form id="js-blog-form">
-            <label for="blog-entry">Add a blog entry</label>
-            <input type="text" name="blog-entry" id="js-new-item">
+            <label for="blog-title">Title</label>
+              <input type="text" name="blog-title">
+            <label for="blog-content">Content</label>
+              <input type="text" name="blog-content">
+            <label for="blog-author-first">Author First Name</label>
+              <input type="text" name="blog-author-first">
+            <label for="blog-author-last">Author Last Name</label>
+              <input type="text" name="blog-author-last">
             <button type="submit">Add Post</button>
           </form>
 
-          <ul class="blog-list">
+          <ul class="blog-list js-blog-list">
           </ul>
         </section>
       </main>
@@ -33,6 +39,6 @@
     <script src="//code.jquery.com/jquery-3.1.1.min.js"
     integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
     crossorigin="anonymous"></script>
-    <script src="/client.js"></script>
+    <script src="/js/client.js"></script>
   </body>
 </html>
