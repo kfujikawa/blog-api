@@ -1,9 +1,3 @@
 language: node_js
 node_js: node
-deploy:
-  provider: heroku
-  api_key:
-    secure: ZWKzkWEZLAudEZDrTugDLjfw2bD2Rz7POsXZlm+i9k3CSrfRHrmKKvrSpogQlfrwVMucxW1aqQ6Yb5nNEHxdwFZoEwMNvgT4ao60kH7we/eqet2MwLyGe+HllZNO9jxfIM+ckILJvT72m67h68DTmov0NbcKJZlVrpKRrB6ORxwzqI5jvokNU1bMZ0yTCT8HlnPAfAoiBen/yH9Y72UXjxynUX/0PAEDUH8AfFZdzeCdN8aOWxneC0KZrSr+5AaRt5ZlnY/FlS642l86k7r9cVgbw2dJV6J0WLDx4qpT73hDxF0mGvy960/dSic2MQ3wWoI/Vui+3gIEZoZODe1+Fr+jVrpqfIpqfMPFd/x/22bENpw93r4i66JnC7Kbb1LX7zctdFmzOn+5NYvAk0CmsLeDMA264E+wBKbSNYnwMIQkRYw6W9jsXgWy7Ww2u08eOvXfG5mZttM4SfvIcLE4t1M3srAjEWeW/xig3Kl3u3S+oSYhXFUomVRxy1Zr3kGCPtwJrLTsZ/g/S86WJyxjtOg2+iGW20JAgpXiEUtXw15Do1UVom43Pjw+wkKz57XnECt1VZ9MW6vZoLXJ+0qsTQilkGPF13J/EomaDe511Xm7Z6Ff15rwm7/1Q9HRHVlDRh+8Gr/mxp2Yne/tTZLJuJLEFkz9fT2/2aRnb0WTayQ=
-  app: intense-dawn-20370
-  on:
-    repo: kfujikawa/blog-api
+
