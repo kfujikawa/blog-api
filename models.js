@@ -28,8 +28,6 @@ const blogSchema = mongoose.Schema({
   },
 });
 
-//Virtuals?
+// Creates a new Mongoose model "BlogPost" that uses the blogSchema.  "BlogPost" represents the collection in the db.  Mongo converts the name to lowercase and pluralizes ("db.blogposts")
 
-// Creates a new Mongoose model "Post" that uses the blogSchema.  "Post" represents the collection in the db.  Mongo converts the name to lowercase and pluralizes ("db.posts")
-
-module.exports = mongoose.model("Post", blogSchema); 
+module.exports = mongoose.model("BlogPost", blogSchema);

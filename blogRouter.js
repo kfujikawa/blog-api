@@ -4,11 +4,11 @@ const router = express.Router();
 const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json();
 
-const Post = require("./models");
+const BlogPost = require("./models");
 
 //GET
 router.get("/", (req, res) => {
- Post
+ BlogPost
    .find()
    .select("title content author publishDate")
    // .where("author.firstName").equals("Wilson")
@@ -25,7 +25,7 @@ router.get("/", (req, res) => {
 //GET by id
 router.get("/:id", (req, res) => {
 
- Post
+ BlogPost
    .findById(req.params.id)
    .then(post => {
      res.status(200).json(post);
@@ -38,19 +38,32 @@ router.get("/:id", (req, res) => {
 
 //POST
 router.post("/", jsonParser, (req, res) => {
- Post
-   .create(req.body)
-   .then(post => res.status(201).end())
-   .catch(error => {
-     res.status(500).json({
-       message: "Internal server error"
-     });
-   });
+  const requiredFields = ['title', 'content', 'author'];
+  for (let i=0; i<requiredFields.length; i++) {
+    const field = requiredFields[i];
+    if (!(field in req.body)) {
+      const message = `Missing \`${field}\` in request body`
+      console.error(message);
+      return res.status(400).send(message);
+    }
+  }
+
+  BlogPost
+    .create({
+      title: req.body.title,
+      content: req.body.content,
+      author: req.body.author
+    })
+    .then(blogPost => res.status(201).json(blogPost)
+    .catch(err => {
+        console.error(err);
+        res.status(500).json({error: 'Something went wrong'});
+    });
 });
 
 //DELETE
 router.delete('/:id', (req, res) => {
- Post
+ BlogPost
    .findByIdAndRemove(req.params.id)
    .then(post => res.status(204).end())
    .catch(err => res.status(500).json({
@@ -72,7 +85,7 @@ router.put("/:id", (req, res) => {
      }
    });
 
-   Post
+   BlogPost
      .findByIdAndUpdate(req.params.id, {
        $set: toUpdate
      })
@@ -102,4 +115,46 @@ router.use("*", (req, res) => {
  });
 });
 
-module.exports = router;
+let server;
+
+// this function connects to our database, then starts the server
+function runServer(databaseUrl=DATABASE_URL, port=PORT) {
+  return new Promise((resolve, reject) => {
+    mongoose.connect(databaseUrl, err => {
+      if (err) {
+        return reject(err);
+      }
+      server = app.listen(port, () => {
+        console.log(`Your app is listening on port ${port}`);
+        resolve();
+      })
+      .on('error', err => {
+        mongoose.disconnect();
+        reject(err);
+      });
+    });
+  });
+}
+
+// this function closes the server, and returns a promise. we'll
+// use it in our integration tests later.
+function closeServer() {
+  return mongoose.disconnect().then(() => {
+     return new Promise((resolve, reject) => {
+       console.log('Closing server');
+       server.close(err => {
+           if (err) {
+               return reject(err);
+           }
+           resolve();
+       });
+     });
+  });
+}
+
+if (require.main === module) {
+  runServer().catch(err => console.error(err));
+};
+
+
+module.exports = {runServer, app, closeServer, router};

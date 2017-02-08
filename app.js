@@ -1,22 +1,23 @@
-const express = require("express");
-const morgan = require("morgan");
-const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const express = require("express");
+const mongoose = require("mongoose");
+const morgan = require("morgan");
 const path = require("path");
+const blogRouter = require("./blogRouter");
+
+
+const {PORT, DATABASE_URL} = require("./config");
+const {BlogPost} = require("./models");
+
+const app = express();
+
+app.use(morgan('common'));
+app.use(bodyParser.json());
 
 mongoose.Promise = global.Promise; 
 
-const {PORT, DATABASE_URL} = require("./config");
-const {Blog} = require("./models");
-
-const app = express();
-const blogRouter = require("./blogRouter");
-app.use(bodyParser.json());
-
-
 // log the http layer
 app.use(morgan("common"));
-
 app.use(express.static(path.join(__dirname, "/public")));
 
 app.get("/", (req, res) => {
